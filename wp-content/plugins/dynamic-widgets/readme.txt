@@ -1,37 +1,95 @@
 === Plugin Name ===
 Contributors: Qurl
-Donate link:
-Tags: widget, widgets, dynamic, sidebar, custom, rules, admin, conditional tags
-Requires at least: 2.9.1
-Tested up to: 3.0.1
-Stable tag: 1.3.5
+Donate link: http://www.qurl.nl/dynamic-widgets/donate/
+Tags: widget, widgets, dynamic, sidebar, custom, rules, logic, admin, condition, conditional tags, hide, show, wpml, qtranslate, wpec, buddypress, pods, bbpress
+Requires at least: 3.0.0
+Tested up to: 3.5
+Stable tag: 1.5.4
 
-Dynamic Widgets gives you more control over your widgets. It lets you dynamicly place widgets on WordPress pages.
+Dynamic Widgets gives you full control on which pages your widgets will appear. It lets you dynamicly show or hide widgets on WordPress pages.
 
 == Description ==
 
-Dynamic Widgets gives you more control over your widgets. It lets you dynamicly place widgets on WordPress pages by excluding or including rules with just a few mouse clicks by role, dates, for the homepage, single posts, pages, authors, categories, archives, error page, search page and custom post types.
+Dynamic Widgets gives you full control on which pages your widgets will appear. It lets you dynamically show or hide widgets on WordPress pages by setting conditional logic rules with just a few mouse clicks. No knowledge of PHP required. No fiddling around with conditional tags. You can set conditional rules by Role, Dates, Browser, Theme Template, Language (WPML or QTranslate), URL, for the Homepage, Single Posts, Attachments, Pages, Authors, Categories, Tags, Archives, Error Page, Search Page, Custom Post Types, Custom Post Type Archives, Custom Taxonomies in Custom Post Types, Custom Taxonomies Archives, WPEC/WPSC Categories, BuddyPress Components, BuddyPress Groups, Pods pages and bbPress.
+
+For the latest news about Dynamic Widgets visit [my website](http://www.qurl.nl/).
+
+= I need your support =
+
+It is very hard to continue development and support for this plugin without contributions from users like you. If you enjoy using Dynamic Widgets and find it useful, please consider [making a donation](http://www.qurl.nl/dynamic-widgets/donate/). Your donation will help encourage and support the plugin's continued development and better user support.
+
+= Features =
 
 * Default widget display setting is supported for:
   - User roles
   - Dates
+  - Day of week
+  - Weeknumbers
+  - Browsers
+  - Theme Templates
+  - Languages (WPML or QTranslate)
+  - URL
   - Front page
   - Single post pages
+  - Attachment pages
   - Pages
   - Author pages
   - Category pages
+  - Tag pages
   - Archive pages
   - Error Page
   - Search Page
-  - Custom Post Types (since WordPress 3.0)
-* Exceptions can be created for:
+  - Custom Post Types
+  - Custom Post Type Archive pages
+  - Custom Taxonomy Archive pages
+  - WP Shopping Cart / WP E-Commerce Categories
+  - BuddyPress Components pages
+  - BuddyPress Groups
+  - Pods pages
+  - bbPress User Profile pages
+
+* Exception rules can be created for:
   - User roles on role, including not logged in (anonymous) users
   - Dates on from, to or range
-  - Single post pages on Author, Categories, Tags and/or Individual posts
-  - Pages on Page Title
+  - Day of week on day
+  - Weeknumer on number
+  - Browsers on browser name
+  - Theme Templates on template name
+  - Languages (WPML or QTranslate) on language
+  - URL on URL
+  - Front page on first page
+  - Single post pages on Author, Categories (including inheritance from hierarchical parents), Tags, Custom Taxonomies and/or Individual posts
+  - Pages on Page Title and Custom Taxonomies, including inheritance from hierarchical parents
   - Author pages on Author
-  - Category pages on Category name
-  - Custom Posts Type on Custom post name (since WordPress 3.0)
+  - Category pages on Category name, including inheritance from hierarchical parents
+  - Tag pages on Tag
+  - Custom Posts Type on Custom Taxonomy and Custom Post Name, including inheritance from hierarchical parents
+  - Custom Posts Type Archive pages on Custom Post Type
+  - Custom Taxonomy Archive pages on Custom Taxonomy Name, including inheritance from hierarchical parents
+  - WP Shopping Cart / WP E-Commerce Categories on Category name
+  - BuddyPress Component pages on Component
+  - BuddyPress Groups on Group, including hierarchical Groups provided by BP Group Hierarchy or Component
+  - Pods pages on page
+
+* Plugin support for:
+	- bbPress
+	- BuddyPress
+	- BuddyPress Group Hierarchy
+	- QTranslate
+	- Pods
+  - WP MultiLingual (WPML)
+  - WP Shopping Cart / WP E-Commerce (WPSC / WPEC)
+
+* Language files provided:
+	- Brazil Portuguese (pt_BR) by [Renato Tavares](http://www.renatotavares.com)
+	- Chech (cs_CZ) by [Pavel Bilek](http://chcistranky.eu/zdarma/)
+	- Chinese (Simplified) (zh_CN) by Hanolex
+	- Danish (da_DK) by Morten Nalholm
+	- French (fr_FR) by Alexis Nomine
+	- German (de_DE) by Daniel Bihler
+	- Lithuanian (lt_LT) by Liudas Ališauskas
+	- Portuguese (pt_PT) by Pedro Nave
+	- Spanish (es_ES) by Eduardo Larequi
 
 == Installation ==
 
@@ -45,34 +103,56 @@ Installation of this plugin is fairly easy:
 
 == Frequently Asked Questions ==
 
-For the latest FAQ, please visit the [online FAQ](http://www.qurl.nl/faq/).
+For the latest FAQ, please visit the [online FAQ](http://www.qurl.nl/dynamic-widgets/faq/).
 
 = What are the (system) requirements to use this plugin? =
 
 1. A properly working WordPress site (doh!).
 2. Your theme must have at least one dynamic sidebar.
 3. Your theme must call `wp_head()`.
-4. PHP5 is highly recommended. Read on if your host uses PHP4.
+4. PHP5, PHP 5.3 is highly recommended.
 
-= My hoster is (still) using PHP4, so what? =
+= My hoster is (still) using PHP4 =
 
-Start immediately looking for another hoster. YES, immediately! NOW! Pronto! PHP4 was introduced in the year 2000 and is [not supported](http://en.wikipedia.org/wiki/PHP#Release_history) anymore. As I don't have PHP4 anymore, I can only be sure for about 80% the plugin will work. Please let me know if it doesn't. I'll try to work out a solution.
+Sorry, Dynamic Widgets is not compatible with PHP4. Look for another hosting company. The one you're having now don't deserve your money.
+
+= I'm not sure my theme is calling `wp_head()`. Can I check? =
+
+Yes, you can. In the Dynamic Widgets Overview page, click the 'Advanced >' link at the bottom. You should see if `wp_head()` is called in your theme. It is possible Dynamic Widgets can't detect if the theme is calling `wp_head()`. Please contact the author of the theme to ask for it. You can also of course just try Dynamic Widgets to see if it works.
 
 = Does the plugin work on WordPress 3.0 MU? =
 
 Yes, but only if you activate the plugin on a per site base. Network Activation is not supported.
+Extra note: It seems that sometimes for some reason DW does not show up on individual sites within a WP Network without a network activation. You can use [Multisite Plugin Manager](http://wordpress.org/extend/plugins/multisite-plugin-manager/) to overcome this problem.
 
 = I checked the "Make exception rule available to individual posts and tags" option, but nothing happens. =
 
 Did you save the options? If you did, you may try to hit the (i) icon a bit to the right and read the text which appears below.
 
+= What do you mean with logical AND / OR? =
+
+A logical AND means that ALL rules must be met before the action takes place.
+A logical OR means that when ANY rule is met, the action takes place.
+
+= According to the featurelist I should be able to use a hierarchical structure in static pages, but I don't see it. Where is it? =
+
+You probably have more than 500 pages. Building a tree with so many pages slows down the performance of the plugin dramatically. To prevent time-out errors, the child-function has been automatically disabled. You can however raise this limit by clicking on the 'Advanced >' link at the bottom of the Widgets Overview page and raise the number next to the Page limit box.
+
 = The plugin slows down the loading of a page dramatically. Can you do something about it? =
 
 Try setting the plugin to the 'OLD' method. You can do this by clicking on the 'Advanced >' link at the bottom of the Widgets Overview page and check the box next to 'Use OLD method'. See if that helps. Setting the plugin using the 'OLD' method comes with a downside unfortunately. It may leave you behind with a visible empty sidebar.
 
+= I want to check if the 'OLD' method suits me better, is there a way back if it doesn't? =
+
+Yes! You can switch between FILTER and OLD method without any loss of widgets configuration or whatsoever.
+
 = I want in Page X the sidebar becomes empty, but instead several widgets are shown in that sidebar. Am I doing something wrong? =
 
 Your theme probably uses a 'default display widgets policy'. When a sidebar becomes empty, the theme detects this and places widgets by default in it. The plugin can't do anything about that. Ask the theme creator how to fix this.
+
+= I'm using WPEC 3.8 or higher and I don't see the WPEC Categories option anymore. Where is it? =
+
+Since version 3.8, WPEC uses the by WordPress provided Custom Post Types and Custom Taxonomies. Dynamic Widgets supports Custom Post Types and Custom Taxonomies. You'll find the WPEC Categories under the 'Categories (Products)' section.
 
 = You asked me to create a dump. How do I do that? =
 
@@ -84,7 +164,7 @@ Your theme probably uses a 'default display widgets policy'. When a sidebar beco
 
 = I have found a bug! Now what? =
 
-Please file a [bugreport](http://www.qurl.nl/bugreport/). Please note the procedure how to create a dump in the previous answer. After you've filed the report, I'll get back to you asap.
+Please check the [Issue Tracker](http://www.qurl.nl/dynamic-widgets/issue-tracker/) first. The bug might have been reported and even maybe already fixed.  When not, you can file a [bugreport](http://www.qurl.nl/dynamic-widgets/bugreport/). Please note the procedure how to create a dump in the previous answer. After you've filed the report, I'll get back to you asap.
 
 = How do I completely remove Dynamic Widgets? =
 
@@ -94,13 +174,149 @@ Please file a [bugreport](http://www.qurl.nl/bugreport/). Please note the proced
 * Confirm you really want to uninstall the plugin. After the cleanup, the plugin is deactivated automaticly.
 * Remove the directory 'dynamic-widgets' underneath to the `/wp-content/plugins/` directory.
 
-== Release notes ==
-
-Starting with version 1.3.5 Dynamic Widgets is using a new method for removing widgets from the sidebar(s). This new method, called FILTER, is more in line with the way WordPress provides access for plugins to it's system. However this method comes with a downside. Due to it's nature it might slow down the process of removing widgets when you have and use many sidebars. For this, there is the OLD method. The OLD method uses the previous method before version 1.3.5. Downside of that method is it may leave you behind with a visible empty sidebar. There is a way to prevent this, but for that you have to have some PHP programming knowledge. Ask me for an example script if you need it. If you are using the standard WP Twenty Ten theme, you probably want to have a look at the [Twenty Ten Weaver](http://wpweaver.info/themes/twenty-ten-weaver/) theme. Bruce from WP Weaver fixed the empty sidebar with the help of this example script. So you don't need to fix it yourself.
-
-You can switch to the OLD method by clicking on the 'Advanced >' link in the Dynamic Widgets overview page and checking 'Use OLD method'.
-
 == Changelog ==
+
+= Version 1.5.4 =
+
+* Added Danish language file (locale: da_DK) - Tak Morten!
+* Bugfix for WPML postID finder reports 0 when WPML language is unknown.
+* Bugfix for Single Post Rules are lost when autosave of single post is made
+* Bugfix for Warning: Missing argument 2 for wpdb::prepare().
+* Upgraded the Pods module to support Pods version 2. - Thanks Scott for the help!
+* Widend the widget_id space because of looooong widget names.
+* Moved to WordPress time in stead of server time for the date/time based modules.
+
+= Version 1.5.3 =
+
+* Added URL support.
+* Added Day of the week support.
+* Added Weeknumber support.
+* Added Custom Taxonomies support for Posts.
+* Added Chech language files (locale: cs_CZ) - Dekuji Pavel!
+* Added Brazil Portuguese language files (locale: pt_BR) - Obrigado Renato!
+* Bugfix for Notice: Undefined property: stdClass::$post_name.
+* Bugfix for Missing options (Archive, Error, Search); Stopped using the accordion.
+* Bugfix for Notice: Undefined index: single_author_act in dynwid_admin_save.php on line 138.
+* Bugfix for not showing the green checkmark when an option is set for single posts.
+
+= Version 1.5.2 =
+
+* Bugfix for Tag archive rules are not followed correctly.
+* Bugfix to prevent the error: WidgetID is invalid.
+* Security fix for a possible XSS vulnerability.
+
+= Version 1.5.1 =
+
+* Added Custom Taxonomies support for Pages
+* Added Portuguese language files (locale: pt_PT) - Obrigado Pedro!
+* Bugfix for Illegal offset type in isset or empty in /wp-includes/taxonomy.php on line 211.
+* Bugfix for Options disappear when adding a widget to a sidebar.
+* Bugfix for Taxonomy childs are displayed when Taxonomy is not hierarchical.
+* Bugfix for deprecated call-time pass-by-reference in custompost_module.php on line 226.
+* Bugfix for showing info balloon at Tag archive Pages.
+* Bugfix for Invalid argument supplied for foreach() in dynwid_admin_save.php on line 158.
+* Bugfix for Cannot modify header information - headers already sent,
+* Changed the way the hierarchical tree for static pages is build. It should be faster now.
+
+= Version 1.5.0 =
+
+* Added Pods plugin support.
+* Added Tag Archive Pages support.
+* Added hierarchical inheritance for Categories.
+* Added workaround to detect correct template when using Pods.
+* Added negative exceptions for Role.
+* Added an "Only on first page" exception for Front Page.
+* Added support for BP Group Hierarchy.
+* Added support for bbPress User Profile pages.
+* Added Chinese (Simplified) language files (locale: zh_CN) - xie xie Hanolex!
+* Added Lithuanian language files (locale: lt_LT) - dekoju Liudas!
+* Added a "Save & Return" button to the widget options page.
+* Bugfix for subscribers show up in the author lists in WP > 3.1.
+* Bugfix for Taxonomies in Custom Post Types are not always saved.
+* Bugfix for Custom Posts box is sometimes empty.
+* Fixed several PHP notices about undefined variables.
+* Removed support for individual Custom Posts.
+* Removed PHP4 support, minimum PHP version is now 5.1.0.
+* Removed WP < 3.0 support. Minimum WordPress version is now 3.0.
+
+= Version 1.4.2 =
+
+* Added QTranslate support.
+* Added hierarchical inheritance for Custom Taxonomies and Custom Post Types.
+* Added same behaviour in the Author list for WP < 3.1 as in WP > 3.1
+* Bugfix for PHP error in WPML module.
+* Bugfix for not showing WPML languages in WPML module.
+* Bugfix for PHP error in Single posts module when using WP < 3.1.
+* Bugfix for possible PHP notice when a child does not exist in the hierarchical tree.
+* Bugfix for wrong page count.
+* Broadend the capability for changing DW configuration from 'switch_themes' to 'edit_theme_options'.
+* Disabled 'WPSC Category' when using WPEC > 3.8 as it's now covered by Custom Taxonomies Archives.
+
+= Version 1.4.1 =
+
+* Added Custom Taxonomies support for Custom Post Types.
+* Added WPML support to Custom Taxonomies.
+* Added support for Custom Taxonomies Archives.
+* Added support for Theme Templates.
+* Added hierarchical structure overview for Categories.
+* Added Component exceptions support in BuddyPress Groups.
+* Added a Quick setting: 'Set all options to Off'.
+* Added 'Internet Explorer 6' to the browser detection.
+* Added advanced option setting for the page limit.
+* Bugfix for not selecting the WPML main language ID for Custom Post Types.
+* Bugfix for showing all WPML translated Custom Post Type titles
+* Bugfix for not correct displaying of options string in the widget admin when having options set for Custom Post Type Archives, BuddyPress, BuddyPress Groups.
+* Bugfix for losing exception rules for single posts and tags in rare cases.
+* Bugfix for showing empty Custom Post Type Archives option in settings screen.
+* Bugfix for unexpected behaviour when setting BP groups default to 'No'.
+* Bugfix for only showing the last Custom Posts in the list.
+* Limited the list of authors to users with user level > 0. (WP 3.1 and higher)
+* Security fix in the usage of the returnURL.
+* Workaround when using prototype theme.
+* Workaround for certain themes claiming an invalid BP component confusing Dynamic Widgets.
+
+= Version 1.4.0 =
+
+* Added more l10n text strings
+* Added support for browser options.
+* Added support for attachments.
+* Added support for Custom Post Type Archive pages (native in WordPress 3.1, via plugin in 3.0.x).
+* Added support for BuddyPress Component pages.
+* Added support for BuddyPress Group pages.
+* Added German language files (locale: de_DE) - Vielen dank Daniel!
+* Added Spanish language files (locale: es_ES) - Muchas gracias Eduardo!
+* Bugfix for unexpected behavior when subsequent widgets are in opposite config for WPML.
+* Bugfix for not correct displaying of options string in the widget admin when having options set for childs in Pages or Custom Post Types.
+* Bugfix for an error 404 (file not found) when an error occurs while saving options.
+* Bugfix for unnecessary double creation of the hierarchical tree in Static Pages and Custom Post Types.
+* Modified admin UI for compatibility with WordPress 3.1.
+* Upgrade for WP Shopping Cart / WP E-Commerce to support version 3.8 *** SEE RELEASE NOTES ***
+* Workaround in admin UI when using (a child of) the default BuddyPress theme or the BP Template Pack plugin bombing the accordion.
+* Modularized admin scripts
+* Standarized the use of JavaScript (jQuery)
+
+= Version 1.3.7 =
+
+* Added more l10n text strings.
+* Added French language files (locale: fr_FR) - Merci beaucoup Alexis!
+* Added language (WPML) as an option.
+* Added hierarchical inheritance support for Pages and Custom Post Types
+* Bugfix for unexpected behavior when two widgets are in opposite config of eachother.
+* Fixed a couple of l10n text strings
+* Changed UI in edit options screen (Thanks Alexis for the help!).
+* Speeded up the removing process in FILTER method.
+
+= Version 1.3.6 =
+
+* Added l10n support.
+* Added Dutch language files (locale: nl)
+* Added support for WP Shopping Cart / WP E-Commerce Categories.
+* Bugfix for error 404 (file not found) when saving options.
+* Bugfix for unexpected behavior in subsequent category pages.
+* Bugfix for unexpected behavior in single post when using individual exception rules.
+* Bugfix for unexpected behavior in Custom Post Types.
+* Bugfix for incorrect use and display of Custom Post Types in Widget Edit Options screen.
+* Removed several PHP notices.
 
 = Version 1.3.5 =
 
@@ -180,9 +396,15 @@ You can switch to the OLD method by clicking on the 'Advanced >' link in the Dyn
 
 * Added default widget display setting option for 'Not Found' Error (404) Page.
 
+== Release notes ==
+
+This version has 3 bugs fixed.
+
 == Upgrade Notice ==
 
-Be sure to deactivate Dynamic Widgets Plugin before installing the new version following steps 1 and 2 in the installation procedure. After the install you can reactivate the plugin.
+= 1.5.4 =
+
+This version has 3 bugs fixed. Upgrade before you upgrade to WordPress 3.5.
 
 == Screenshots ==
 

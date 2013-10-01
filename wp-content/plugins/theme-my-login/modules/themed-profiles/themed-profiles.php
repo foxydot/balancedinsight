@@ -1,108 +1,331 @@
 <?php
-/*
-Plugin Name: Themed Profiles
-Description: Enabling this module will initialize and enable themed profiles. There are no other settings for this module.
-*/
+/**
+ * Plugin Name: Themed Profiles
+ * Description: Enabling this module will initialize and enable themed profiles. You will then have to configure the settings via the "Themed Profiles" tab.
+ *
+ * Holds Theme My Login Themed Profiles class
+ *
+ * @package Theme_My_Login
+ * @subpackage Theme_My_Login_Themed_Profiles
+ * @since 6.0
+ */
 
-add_action('tml_load', 'wdbj_tml_themed_profiles_load');
-function wdbj_tml_themed_profiles_load() {
-	add_filter('site_url', 'wdbj_tml_themed_profiles_site_url', 10, 3);
-	add_filter('admin_url', 'wdbj_tml_themed_profiles_site_url', 10, 2);
-}
+if ( ! class_exists( 'Theme_My_Login_Themed_Profiles' ) ) :
+/**
+ * Theme My Login Themed Profiles class
+ *
+ * Allows users to edit profile on the front-end.
+ *
+ * @since 6.0
+ */
+class Theme_My_Login_Themed_Profiles extends Theme_My_Login_Abstract {
+	/**
+	 * Holds options key
+	 *
+	 * @since 6.3
+	 * @access protected
+	 * @var string
+	 */
+	protected $options_key = 'theme_my_login_themed_profiles';
 
-add_action('tml_init', 'wdbj_tml_themed_profiles_init');
-function wdbj_tml_themed_profiles_init() {
-	if ( is_user_logged_in() && is_page(wdbj_tml_get_option('page_id')) && !( isset($_REQUEST['action']) && in_array($_REQUEST['action'], array('update', 'profile', 'logout')) ) ) {
-		$redirect_to = admin_url('profile.php');
-		wp_redirect($redirect_to);
-		exit;
+	/**
+	 * Returns singleton instance
+	 *
+	 * @since 6.3
+	 * @access public
+	 * @return object
+	 */
+	public static function get_object() {
+		return parent::get_object( __CLASS__ );
 	}
-}
 
-add_action('login_action_profile', 'wdbj_tml_themed_profiles_action');
-function wdbj_tml_themed_profiles_action() {
-	global $current_user, $action, $redirect, $profile, $user_id, $wp_http_referer;
-	
-	require_once( TML_MODULE_DIR . '/themed-profiles/includes/template-functions.php' );
-	
-	require_once( ABSPATH . 'wp-admin/includes/misc.php' );
-	require_once( ABSPATH . 'wp-admin/includes/template.php' );
-	require_once( ABSPATH . 'wp-admin/includes/user.php' );
-	require_once( ABSPATH . WPINC . '/registration.php' );
-	
-	// Needed to make admin scripts available
-	define('WP_ADMIN', true);
-	define('IS_PROFILE_PAGE', true);
-	
-	wp_enqueue_style('themed-profiles', plugins_url('theme-my-login/modules/themed-profiles/themed-profiles.css'));
-	
-	wp_enqueue_script('user-profile');
-	wp_enqueue_script('password-strength-meter');
-	
-	wp_reset_vars(array('action', 'redirect', 'profile', 'user_id', 'wp_http_referer'));
+	/**
+	 * Returns default options
+	 *
+	 * @since 6.3
+	 * @access public
+	 *
+	 * @return array Default options
+	 */
+	public static function default_options() {
+		global $wp_roles;
 
-	$wp_http_referer = remove_query_arg(array('update', 'delete_count'), stripslashes($wp_http_referer));
-	
-	if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
-		check_admin_referer('update-user_' . $current_user->ID);
+		if ( empty( $wp_roles ) )
+			$wp_roles = new WP_Roles;
 
-		if ( !current_user_can('edit_user', $current_user->ID) )
-			wp_die(__('You do not have permission to edit this user.', 'theme-my-login'));
-
-		do_action('personal_options_update', $current_user->ID);
-
-		$errors = edit_user($current_user->ID);
-
-		if ( !is_wp_error( $errors ) ) {
-			$redirect = add_query_arg(array('updated' => 'true', 'wp_http_referer' => urlencode($wp_http_referer)));
-			wp_redirect($redirect);
-			exit;
-		} else wdbj_tml_set_error($errors);
+		$options = array();
+		foreach ( $wp_roles->get_names() as $role => $label ) {
+			if ( 'pending' != $role ) {
+				$options[$role] = array(
+					'theme_profile'  => true,
+					'restrict_admin' => false
+				);
+			}
+		}
+		return $options;
 	}
-}
 
-add_filter('the_content', 'wdbj_tml_themed_profiles_content');
-function wdbj_tml_themed_profiles_content($content) {
-	$action = wdbj_tml_get_var('request_action');
-	if ( is_page( wdbj_tml_get_option('page_id') ) && is_user_logged_in() && ( 'profile' == $action || 'update' == $action ) )
-		return wdbj_tml_themed_profiles_display();
-	return $content;
-}
+	/**
+	 * Loads the module
+	 *
+	 * @since 6.0
+	 * @access protected
+	 */
+	protected function load() {
+		add_action( 'tml_modules_loaded', array( &$this, 'modules_loaded' ) );
 
-add_action('init', 'wdbj_tml_themed_profiles_template_redirect');
-function wdbj_tml_themed_profiles_template_redirect() {
-	global $pagenow;
-	if ( 'profile.php' == $pagenow ) {
-		$redirect_to = add_query_arg( 'action', 'profile', get_page_link(wdbj_tml_get_option('page_id')) );
-		$redirect_to = add_query_arg( $_GET, $redirect_to );
-		wp_redirect($redirect_to);
-		exit;
+		add_action( 'init',              array( &$this, 'init'              ) );
+		add_action( 'template_redirect', array( &$this, 'template_redirect' ) );
+		add_filter( 'show_admin_bar',    array( &$this, 'show_admin_bar'    ) );
+
+		add_action( 'tml_request_profile', array( &$this, 'tml_request_profile' ) );
+		add_action( 'tml_display_profile', array( &$this, 'tml_display_profile' ) );
 	}
-}
 
-function wdbj_tml_themed_profiles_site_url($url, $path, $orig_scheme = '') {
-	if ( is_user_logged_in() ) {
-		if ( strpos($url, 'profile.php') !== false ) {
-			$parsed_url = parse_url($url);
-			$url = add_query_arg('action', 'profile', get_permalink(wdbj_tml_get_option('page_id')));
-			if ( isset($parsed_url['query']) ) {
-				wp_parse_str($parsed_url['query'], $r);
-				foreach ( $r as $k => $v ) {
-					if ( strpos($v, ' ') !== false )
-						$r[$k] = rawurlencode($v);
+	/**
+	 * Adds filters to site_url() and admin_url()
+	 *
+	 * Callback for "tml_modules_loaded" in file "theme-my-login.php"
+	 *
+	 * @since 6.0
+	 * @access public
+	 */
+	public function modules_loaded() {
+		add_filter( 'site_url',  array( &$this, 'site_url' ), 10, 3 );
+		add_filter( 'admin_url', array( &$this, 'site_url' ), 10, 2 );
+	}
+
+	/**
+	 * Redirects "profile.php" to themed profile page
+	 *
+	 * Callback for "init" hook
+	 *
+	 * @since 6.0
+	 * @access public
+	 */
+	public function init() {
+		global $current_user, $pagenow;
+
+        if ( is_user_logged_in() && is_admin() ) {
+			$redirect_to = Theme_My_Login::get_page_link( 'profile' );
+
+			$user_role = reset( $current_user->roles );
+			if ( is_multisite() && empty( $user_role ) )
+				$user_role = 'subscriber';
+
+			if ( 'profile.php' == $pagenow && ! isset( $_REQUEST['page'] ) ) {
+				if ( $this->get_option( array( $user_role, 'theme_profile' ) ) ) {
+					if ( ! empty( $_GET ) )
+						$redirect_to = add_query_arg( (array) $_GET, $redirect_to );
+					wp_redirect( $redirect_to );
+					exit;
 				}
-				$url = add_query_arg($r, $url);
+			} else {
+				if ( $this->get_option( array( $user_role, 'restrict_admin' ) ) ) {
+					if ( ! defined( 'DOING_AJAX' ) ) {
+						wp_redirect( $redirect_to );
+						exit;
+					}
+				}
+			}
+        }
+	}
+
+	/**
+	 * Redirects login page to profile if user is logged in
+	 *
+	 * Callback for "template_redirect" hook
+	 *
+	 * @since 6.0
+	 * @access public
+	 */
+	public function template_redirect() {
+		$theme_my_login = Theme_My_Login::get_object();
+
+		if ( Theme_My_Login::is_tml_page() ) {
+			switch ( $theme_my_login->request_action ) {
+				case 'profile' :
+					// Redirect to login page if not logged in
+					if ( ! is_user_logged_in() ) {
+						$redirect_to = Theme_My_Login::get_page_link( 'login', 'reauth=1' );
+						wp_redirect( $redirect_to );
+						exit;
+					}
+					break;
+				case 'logout' :
+					// Allow logout action
+					break;
+				case 'register' :
+					// Allow register action if multisite
+					if ( is_multisite() )
+						break;
+				default :
+					// Redirect to profile for any other action if logged in
+					if ( is_user_logged_in() ) {
+						$redirect_to = Theme_My_Login::get_page_link( 'profile' );
+						wp_redirect( $redirect_to );
+						exit;
+					}
 			}
 		}
 	}
-	return $url;
+
+	/**
+	 * Hides admin bar is admin is restricted
+	 *
+	 * Callback for "show_admin_bar" hook
+	 *
+	 * @since 6.2
+	 * @access public
+	 */
+	public function show_admin_bar( $show_admin_bar ) {
+		global $current_user;
+
+		$user_role = reset( $current_user->roles );
+		if ( is_multisite() && empty( $user_role ) )
+			$user_role = 'subscriber';
+
+		if ( $this->get_option( array( $user_role, 'restrict_admin' ) ) )
+			return false;
+
+		return $show_admin_bar;
+	}
+
+	/**
+	 * Handles profile action
+	 *
+	 * Callback for "tml_request_profile" in method Theme_My_Login::the_request()
+	 *
+	 * @see Theme_My_Login::the_request()
+	 * @since 6.0
+	 * @access public
+	 */
+	public function tml_request_profile() {
+		require_once( ABSPATH . 'wp-admin/includes/user.php' );
+		require_once( ABSPATH . 'wp-admin/includes/misc.php' );
+
+		define( 'IS_PROFILE_PAGE', true );
+
+		load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
+
+		register_admin_color_schemes();
+
+		wp_enqueue_style( 'password-strength', plugins_url( 'theme-my-login/modules/themed-profiles/themed-profiles.css' ) );
+
+		wp_enqueue_script( 'user-profile' );
+
+		$current_user = wp_get_current_user();
+
+		if ( 'POST' == $_SERVER['REQUEST_METHOD'] ) {
+			check_admin_referer( 'update-user_' . $current_user->ID );
+
+			if ( ! current_user_can( 'edit_user', $current_user->ID ) )
+				wp_die( __( 'You do not have permission to edit this user.' ) );
+
+			do_action( 'personal_options_update', $current_user->ID );
+
+			$errors = edit_user( $current_user->ID );
+
+			if ( ! is_wp_error( $errors ) ) {
+				$args = array( 'updated' => 'true' );
+				if ( ! empty( $_REQUEST['instance'] ) )
+					$args['instance'] = $_REQUEST['instance'];
+				$redirect = add_query_arg( $args );
+				wp_redirect( $redirect );
+				exit;
+			} else {
+				Theme_My_Login::get_object()->errors = $errors;
+			}
+		}
+	}
+
+	/**
+	 * Outputs profile form HTML
+	 *
+	 * Callback for "tml_display_profile" hook in method Theme_My_login_Template::display()
+	 *
+	 * @see Theme_My_Login_Template::display()
+	 * @since 6.0
+	 * @access public
+	 *
+	 * @param object $template Reference to $theme_my_login_template object
+	 */
+	public function tml_display_profile( &$template ) {
+		global $current_user, $profileuser, $_wp_admin_css_colors, $wp_version;
+
+		require_once( ABSPATH . 'wp-admin/includes/user.php' );
+		require_once( ABSPATH . 'wp-admin/includes/misc.php' );
+
+		if ( isset( $_GET['updated'] ) && 'true' == $_GET['updated'] )
+			Theme_My_Login::get_object()->errors->add( 'profile_updated', __( 'Profile updated.' ), 'message' );
+
+		$current_user = wp_get_current_user();
+		$profileuser  = get_user_to_edit( $current_user->ID );
+
+		$user_role = reset( $profileuser->roles );
+		if ( is_multisite() && empty( $user_role ) )
+			$user_role = 'subscriber';
+
+		$_template = array();
+
+		// Allow template override via shortcode or template tag args
+		if ( ! empty( $template->options['profile_template'] ) )
+			$_template[] = $template->options['profile_template'];
+
+		// Allow role template overrid via shortcode or template tag args
+		if ( ! empty( $template->options["profile_template_{$user_role}"] ) )
+			$_template[] = $template->options["profile_template_{$user_role}"];
+
+		// Role template
+		$_template[] = "profile-form-{$user_role}.php";
+
+		// Default template
+		$_template[] = 'profile-form.php';
+
+		// Load template
+		$template->get_template( $_template, true, compact( 'current_user', 'profileuser', 'user_role', '_wp_admin_css_colors', 'wp_version' ) );
+	}
+
+	/**
+	 * Changes links from "profile.php" to themed profile page
+	 *
+	 * Callback for "site_url" hook
+	 *
+	 * @see site_url()
+	 * @since 6.0
+	 * @access public
+	 *
+	 * @param string $url The generated link
+	 * @param string $path The specified path
+	 * @param string $orig_scheme The original connection scheme
+	 * @return string The filtered link
+	 */
+	public function site_url( $url, $path, $orig_scheme = '' ) {
+		global $current_user, $pagenow;
+
+		if ( 'profile.php' != $pagenow && strpos( $url, 'profile.php' ) !== false ) {
+			$user_role = reset( $current_user->roles );
+			if ( is_multisite() && empty( $user_role ) )
+				$user_role = 'subscriber';
+
+			if ( $user_role && ! $this->get_option( array( $user_role, 'theme_profile' ) ) )
+				return $url;
+					
+			$parsed_url = parse_url( $url );
+
+			$url = Theme_My_Login::get_page_link( 'profile' );
+
+			if ( isset( $parsed_url['query'] ) )
+				$url = add_query_arg( array_map( 'rawurlencode', wp_parse_args( $parsed_url['query'] ) ), $url );
+		}
+		return $url;
+	}
 }
 
-add_filter('tml_title', 'wdbj_tml_themed_profiles_title', 10, 2);
-function wdbj_tml_themed_profiles_title($title, $action) {
-	if ( ( 'profile' == $action || 'update' == $action ) && is_user_logged_in() && '' == wdbj_tml_get_var('current_instance', 'instance_id') )
-		$title = __('Your Profile', 'theme-my-login');
-	return $title;
-}
+Theme_My_Login_Themed_Profiles::get_object();
 
-?>
+endif;
+
+if ( is_admin() )
+	include_once( dirname( 	__FILE__ ) . '/admin/themed-profiles-admin.php' );
+

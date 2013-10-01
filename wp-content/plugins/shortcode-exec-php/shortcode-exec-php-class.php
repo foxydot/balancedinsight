@@ -2,7 +2,7 @@
 
 /*
 	Support class Shortcode Exec PHP Plugin
-	Copyright (c) 2010, 2011, 2012 by Marcel Bokhorst
+	Copyright (c) 2010-2013 by Marcel Bokhorst
 */
 
 if (!function_exists('is_plugin_active_for_network'))
@@ -886,8 +886,12 @@ if (!class_exists('WPShortcodeExecPHP')) {
 				echo '</span></td></tr>';
 			}
 ?>
-			<tr><td><textarea name="<?php echo c_scep_form_phpcode . $i; ?>" id="<?php echo c_scep_form_phpcode . $i; ?>"
-			style="width: <?php echo $scep_width; ?>px;height: <?php echo $scep_height; ?>px;"><?php echo htmlentities($code, ENT_NOQUOTES, get_option('blog_charset')); ?></textarea></td></tr>
+			<tr><td><textarea
+				name="<?php echo c_scep_form_phpcode . $i; ?>"
+				id="<?php echo c_scep_form_phpcode . $i; ?>"
+				style="width: <?php echo $scep_width; ?>px;height: <?php echo $scep_height; ?>px;"
+			><?php echo htmlentities($code, ENT_NOQUOTES, get_option('blog_charset')); ?></textarea></td></tr>
+			<tr><td><em><?php _e('Insert your PHP code, minus the &lt;?php and ?&gt; tags', c_scep_text_domain); ?></em></td></tr>
 			<tr><td align="right">
 			<span name="scep_message" class="scep_message"></span>
 			<img src="<?php echo $this->plugin_url  . '/img/ajax-loader.gif'; ?>" alt="wait" name="scep_wait" style="display: none;" />
@@ -1339,7 +1343,7 @@ if (!class_exists('WPShortcodeExecPHP')) {
 		}
 
 		// Helper check environment
-		function Check_prerequisites() {
+		static function Check_prerequisites() {
 			// Check PHP version
 			if (version_compare(PHP_VERSION, '4.3.0', '<'))
 				die('Shortcode Exec PHP requires at least PHP 4.3.0');
@@ -1359,7 +1363,7 @@ if (!class_exists('WPShortcodeExecPHP')) {
 			WPShortcodeExecPHP::Check_function('wp_enqueue_style');
 		}
 
-		function Check_function($name) {
+		static function Check_function($name) {
 			if (!function_exists($name))
 				die('Required WordPress function "' . $name . '" does not exist');
 		}

@@ -1,74 +1,130 @@
 <?php
-/*
-Plugin Name: Custom User Links
-Description: Enabling this module will initialize custom user links. You will then have to configure the settings via the "User Links" tab.
-*/
+/**
+ * Plugin Name: Custom User Links
+ * Description: Enabling this module will initialize custom user links. You will then have to configure the settings via the "User Links" tab.
+ *
+ * Holds Theme My Login Custom User Links class
+ *
+ * @package Theme_My_Login
+ * @subpackage Theme_My_Login_Custom_User_Links
+ * @since 6.0
+ */
 
-add_action('tml_init', 'wdbj_tml_custom_user_links_init');
-function wdbj_tml_custom_user_links_init() {
-	add_filter('tml_user_links', 'wdbj_tml_custom_user_links');
-}
+if ( ! class_exists( 'Theme_My_Login_Custom_User_Links' ) ) :
+/**
+ * Theme My Login Custom User Links module class
+ *
+ * Adds the ability to define custom links to display to a user when logged in based upon their "user role".
+ *
+ * @since 6.0
+ */
+class Theme_My_Login_Custom_User_Links extends Theme_My_Login_Abstract {
+	/**
+	 * Holds options key
+	 *
+	 * @since 6.3
+	 * @access protected
+	 * @var string
+	 */
+	protected $options_key = 'theme_my_login_user_links';
 
-function wdbj_tml_custom_user_links($links) {
-	if ( !is_user_logged_in() )
+	/**
+	 * Returns singleton instance
+	 *
+	 * @since 6.3
+	 * @access public
+	 * @return object
+	 */
+	public static function get_object() {
+		return parent::get_object( __CLASS__ );
+	}
+
+	/**
+	 * Returns default options
+	 *
+	 * @since 6.3
+	 * @access public
+	 *
+	 * @return array Default options
+	 */
+	public static function default_options() {
+		global $wp_roles;
+
+		if ( empty( $wp_roles ) )
+			$wp_roles = new WP_Roles;
+
+		$options = array();
+		foreach ( $wp_roles->get_names() as $role => $role_name ) {
+			if ( 'pending' != $role ) {
+				$options[$role] = array(
+					array(
+						'title' => __( 'Dashboard' ),
+						'url'   => admin_url()
+					),
+					array(
+						'title' => __( 'Profile' ),
+						'url'   => admin_url( 'profile.php' )
+					)
+				);
+			}
+		}
+		return $options;
+	}
+
+	/**
+	 * Loads the module
+	 *
+	 * @since 6.0
+	 * @access protected
+	 */
+	protected function load() {
+		add_filter( 'tml_user_links', array( &$this, 'get_user_links' ) );
+	}
+
+	/**
+	 * Gets the user links for the current user's role
+	 *
+	 * Callback for "tml_user_links" hook in method Theme_My_Login_Template::display()
+	 *
+	 * @see Theme_My_Login_Template::display()
+	 * @since 6.0
+	 * @access public
+	 *
+	 * @param array $links Default user links
+	 * @return array New user links
+	 */
+	public function get_user_links( $links = array() ) {
+		if ( ! is_user_logged_in() )
+			return $links;
+
+		$current_user = wp_get_current_user();
+		if ( is_multisite() && empty( $current_user->roles ) )
+			$current_user->roles = array( 'subscriber' );
+
+		foreach( (array) $current_user->roles as $role ) {
+			if ( $links = $this->get_option( $role ) );
+				break;
+		}
+
+		// Define and allow filtering of replacement variables
+		$replacements = apply_filters( 'tml_custom_user_links_variables', array(
+			'%user_id%'  => $current_user->ID,
+			'%username%' => $current_user->user_nicename
+		) );
+
+		// Replace variables in link
+		foreach ( (array) $links as $key => $link ) {
+			$links[$key]['url'] = Theme_My_Login_Common::replace_vars( $link['url'], $current_user->ID, $replacements );
+		}
+
 		return $links;
-
-	$current_user = wp_get_current_user();
-	$user_role = reset($current_user->roles);
-	
-	$links = wdbj_tml_get_option('user_links', $user_role);
-	if ( !is_array($links) || empty($links) )
-		$links = array();
-
-	// Allow for user_id variable in link
-	foreach ( $links as $key => $link ) {
-		$links[$key]['url'] = str_replace('%user_id%', $current_user->ID, $link['url']);
-	}
-	
-	return $links;
-}
-
-add_action('tml_admin_init', 'wdbj_tml_custom_user_links_admin_init');
-function wdbj_tml_custom_user_links_admin_init() {
-	global $wp_roles;
-	
-	if ( empty($wp_roles) )
-		$wp_roles = new WP_Roles();
-	
-    require_once (TML_MODULE_DIR . '/custom-user-links/admin/admin.php');
-	add_action('tml_admin_menu', 'wdbj_tml_custom_user_links_admin_menu');
-	add_filter('tml_save_settings', 'wdbj_tml_custom_user_links_save_settings');
-	add_action('tml_settings_page', 'wdbj_tml_custom_user_links_admin_styles');
-	foreach ( $wp_roles->get_names() as $role => $label ) {
-		add_action('wp_ajax_add-' . $role . '-link', 'wdbj_tml_custom_user_links_add_user_link_ajax');
-		add_action('wp_ajax_delete-' . $role . '-link', 'wdbj_tml_custom_user_links_delete_user_link_ajax');
 	}
 }
 
-add_action('activate_custom-user-links/custom-user-links.php', 'wdbj_tml_custom_user_links_activate');
-function wdbj_tml_custom_user_links_activate() {
-	$current = wdbj_tml_get_option('user_links');
-	$default = wdbj_tml_custom_user_links_default_settings();
-	
-	if ( is_array($current) )
-		wdbj_tml_update_option(array_merge($default, $current), 'user_links');
-	else
-		wdbj_tml_update_option($default, 'user_links');
-	
-	unset($current, $default);
-}
+Theme_My_Login_Custom_User_Links::get_object();
 
-function wdbj_tml_custom_user_links_default_settings() {
-	global $wp_roles;
-	foreach ( $wp_roles->get_names() as $role => $label ) {
-		if ( 'pending' == $role )
-			continue;
-		$options[$role] = array(
-            array('title' => __('Dashboard', 'theme-my-login'), 'url' => admin_url()),
-            array('title' => __('Profile', 'theme-my-login'), 'url' => admin_url('profile.php'))
-		);
-	}
-    return $options;
-}
+endif;
 
-?>
+if ( is_admin() )
+	include_once( dirname( __FILE__ ) . '/admin/custom-user-links-admin.php' );
+

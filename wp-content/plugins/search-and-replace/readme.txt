@@ -1,30 +1,35 @@
 === Search and Replace ===
-Contributors: Bueltge
-Donate link: http://bueltge.de/wunschliste/
+Contributors: Bueltge, inpsyde
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RHWH8VG798CSC
 Tags: database, mysql, search, replace, admin, security
 Requires at least: 1.5
-Tested up to: 3.0
-Stable tag: 1.0
+Tested up to: 3.5-RC2
+Stable tag: 2.6.5
 
 A simple search for find strings in your database and replace the string.
 
 == Description ==
 A simple search for find strings in your database and replace the string. You can search in ID, post-content, GUID, titel, excerpt, meta-data, comments, comment-author, comment-e-mail, comment-url, tags/categories and categories-description. It is possible to replace the user-ID in all tables and the user-login for more security in the WordPress-Application ( [more Informations](http://wordpress-buch.bueltge.de/wordpress-sicherer-machen/30/ "about Security in WordPress") ).
 
-"Search and Replace" Originalplugin ist von [Mark Cunningham](http://thedeadone.net/ "Mark Cunningham") and was advanced (comments and comment-author) by [Gonahkar](http://www.gonahkar.com/ "Gonahkar"). More increments by Frank Bueltge.
+"Search and Replace" Originalplugin ist von [Mark Cunningham](http://thedeadone.net/ "Mark Cunningham") and was advanced (comments and comment-author) by [Gonahkar](http://www.gonahkar.com/ "Gonahkar"). More increments by my, Frank BÃ¼ltge.
 
-Please visit [the official website](http://bueltge.de/wp-suchen-und-ersetzen-de-plugin/114/ "Search and Replace") for further details and the latest information on this plugin.
+**Made by [Inpsyde](http://inpsyde.com) &middot; We love WordPress**
+
+Have a look at the premium plugins in our [market](http://marketpress.com).
 
 == Installation ==
+= Requirements =
+* WordPress version 3.0 and later (tested at 3.5-Beta2 and 3.3.2)
+
+= Installation =
 1. Unpack the download-package
 1. Upload all files to the `/wp-content/plugins/` directory, with folder
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Got to Manage -> Search/Replace
-
-See on [the official website](http://bueltge.de/wp-suchen-und-ersetzen-de-plugin/114/ "Search and Replace").
+1. Got to Tools -> Search/Replace
 
 == Screenshots ==
-1. Funktions in WordPress 2.7 beta
+1. Functions in WordPress 2.7 beta
+1. The search for an string in WordPress 3.1-RC2
 
 == Other Notes ==
 = Acknowledgements =
@@ -33,24 +38,45 @@ See on [the official website](http://bueltge.de/wp-suchen-und-ersetzen-de-plugin
 * Polish translation by [Bartosz Sobczyk](http://www.brt12.eu "Bartosz Sobczyk")
 * Persian translation by [Mostafa Soufi](http://iran98.org "iran98.org")
 * Danish translation by [GeorgWP](http://wordpress.blogos.dk/s%C3%B8g-efter-downloads/?did=265 "wordpress.blogos.dk")
+* Spanish translation by [myhosting.com Team](http://myhosting.com/)
+* Belarussian language by [Alexander Ovsov](http://webhostinggeeks.com/science/)
+* Thanks to [Brian Flores](http://www.inmotionhosting.com/) for serbian translation
+* Thanks to [Martien van de Griendt](http://www.vandegriendtwebsites.nl) for dutch translation
+* Romanian language files, thanks to [Alexander Ovsov](http://webhostinggeeks.com/)
+* Belarusian laguage files, thanks to [Alexander Ovsov](http://webhostinggeeks.com/)
+* Lithuanian translation files by [Vincent G](http://www.host1plus.com)
+* Branco, Slovak translation by [WebHostingGeeks](http://webhostinggeeks.com/blog/)
 
-= Licence =
-Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog. But if you enjoy this plugin, you can thank me and leave a [small donation](http://bueltge.de/wunschliste/ "Wishliste and Donate") for the time I’ve spent writing and supporting this plugin. And I really don’t want to know how many hours of my life this plugin has already eaten ;)
+= License =
+Good news, this plugin is free for everyone! Since it's released under the GPL, you can use it free of charge on your personal or commercial blog. But if you enjoy this plugin, you can thank me and leave a [small donation](http://bueltge.de/wunschliste/ "Wishliste and Donate") for the time I've spent writing and supporting this plugin. And I really don't want to know how many hours of my life this plugin has already eaten ;)
 
 = Translations =
-The plugin comes with various translations, please refer to the [WordPress Codex](http://codex.wordpress.org/Installing_WordPress_in_Your_Language "Installing WordPress in Your Language") for more information about activating the translation. If you want to help to translate the plugin to your language, please have a look at the sitemap.pot file which contains all defintions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows).
+The plugin comes with various translations, please refer to the [WordPress Codex](http://codex.wordpress.org/Installing_WordPress_in_Your_Language "Installing WordPress in Your Language") for more information about activating the translation. If you want to help to translate the plugin to your language, please have a look at the .pot file which contains all defintions and may be used with a [gettext](http://www.gnu.org/software/gettext/) editor like [Poedit](http://www.poedit.net/) (Windows) or plugin for WordPress [Localization](http://wordpress.org/extend/plugins/codestyling-localization/).
 
-
-== Frequently Asked Questions ==
-
-= Where can I get more information? =
-
-Please visit [the official website](http://bueltge.de/wp-suchen-und-ersetzen-de-plugin/114/ "Search and Replace") for the latest information on this plugin.
-
-= I love this plugin! How can I show the developer how much I appreciate his work? =
-
-Please visit [the official website](http://bueltge.de/wp-suchen-und-ersetzen-de-plugin/114/ "Search and Replace") and let him know your care or see the [wishlist](http://bueltge.de/wunschliste/ "Wishlist") of the author.
 
 == Changelog ==
+= v2.6.5 =
+* Fix for change User-ID, add table `comments`
+
+= v2.6.4 =
+* Fix capability check, if the constant `DISALLOW_FILE_EDIT` ist defined
+
+= v2.6.3 (10/10/2011) =
+* filter for return values, html-filter
+* add belarussian language
+* add romanian language files
+
+= v2.6.2 (09/11/2011) =
+* change right object for use the plugin also on WP smaller 3.0, include 2.9
+* add function search and replace in all tables of the database - special care!
+
+= v2.6.1 (01/25/2011) =
+* Feature: Add Signups-Table for WP MU
+* Maintenance: check for tables, PHP Warning fix 
+
+= v2.6.0 (01/03/2011) =
+* Feature: add an new search for find strings (maybe a new way for search strings)
+* Maintenance: small changes on source
+
 = v2.5.1 (07/07/2010) =
 * small changes for use in WP 3.0
