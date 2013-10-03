@@ -2,10 +2,10 @@
 	Class: prettyPhoto
 	Use: Lightbox clone for jQuery
 	Author: Stephane Caron (http://www.no-margin-for-errors.com)
-	Version: 3.1.4
+	Version: 3.1.5
 ------------------------------------------------------------------------- */
 (function($) {
-	$.prettyPhoto = {version: '3.1.4'};
+	$.prettyPhoto = {version: '3.1.5'};
 	
 	$.fn.prettyPhoto = function(pp_settings) {
 		pp_settings = jQuery.extend({
@@ -90,7 +90,7 @@
 			iframe_markup: '<iframe src ="{path}" width="{width}" height="{height}" frameborder="no"></iframe>',
 			inline_markup: '<div class="pp_inline">{content}</div>',
 			custom_markup: '',
-			social_tools: false /* html or false to disable, suggested markup: <div class="twitter"><iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/tweet_button.html?count=none&amp;url={location_href}" style="width:58px; height:20px;"></iframe></div><div class="facebook"><iframe src="//www.facebook.com/plugins/like.php?href={location_href}&amp;send=false&amp;layout=button_count&amp;width=500&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:50px; height:21px;" allowTransparency="true"></iframe></div> */
+			social_tools: '<div class="twitter"><a href="http://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script></div><div class="facebook"><iframe src="//www.facebook.com/plugins/like.php?locale=en_US&href={location_href}&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font&amp;colorscheme=light&amp;height=23" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:23px;" allowTransparency="true"></iframe></div>' /* html or false to disable */
 		}, pp_settings);
 		
 		// Global variables accessible only by prettyPhoto
@@ -143,7 +143,6 @@
 			settings = pp_settings;
 			
 			if(settings.theme == 'pp_default') settings.horizontal_padding = 16;
-			if(settings.ie6_fallback && $.browser.msie && parseInt($.browser.version) == 6) settings.theme = "light_square"; // Fallback to a supported theme for IE6
 			
 			// Find out if the picture is part of a set
 			theRel = $(this).attr(settings.hook);
@@ -181,7 +180,6 @@
 		$.prettyPhoto.open = function(event) {
 			if(typeof settings == "undefined"){ // Means it's an API call, need to manually get the settings and set the variables
 				settings = pp_settings;
-				if($.browser.msie && $.browser.version == 6) settings.theme = "light_square"; // Fallback to a supported theme for IE6
 				pp_images = $.makeArray(arguments[0]);
 				pp_titles = (arguments[1]) ? $.makeArray(arguments[1]) : $.makeArray("");
 				pp_descriptions = (arguments[2]) ? $.makeArray(arguments[2]) : $.makeArray("");
@@ -189,8 +187,6 @@
 				set_position = (arguments[3])? arguments[3]: 0;
 				_build_overlay(event.target); // Build the overlay {this} being the caller
 			}
-
-			if($.browser.msie && $.browser.version == 6) $('select').css('visibility','hidden'); // To fix the bug with IE select boxes
 			
 			if(settings.hideflash) $('object,embed,iframe[src*=youtube],iframe[src*=vimeo]').css('visibility','hidden'); // Hide the flash
 
@@ -203,7 +199,7 @@
 		
 			// Rebuild Facebook Like Button with updated href
 			if(settings.social_tools){
-				facebook_like_link = settings.social_tools.replace(/{location_href}/g, encodeURIComponent(location.href)); 
+				facebook_like_link = settings.social_tools.replace('{location_href}', encodeURIComponent(location.href)); 
 				$pp_pic_holder.find('.pp_social').html(facebook_like_link);
 			}
 			
@@ -295,10 +291,10 @@
 						pp_dimensions = _fitToViewport(movie_width,movie_height); // Fit item to viewport
 					
 						movie_id = pp_images[set_position];
-						var regExp = /http:\/\/(www\.)?vimeo.com\/(\d+)/;
+						var regExp = /http(s?):\/\/(www\.)?vimeo.com\/(\d+)/;
 						var match = movie_id.match(regExp);
 						
-						movie = 'http://player.vimeo.com/video/'+ match[2] +'?title=0&amp;byline=0&amp;portrait=0';
+						movie = 'http://player.vimeo.com/video/'+ match[3] +'?title=0&amp;byline=0&amp;portrait=0';
 						if(settings.autoplay) movie += "&autoplay=1;";
 				
 						vimeo_width = pp_dimensions['width'] + '/embed/?moog_width='+ pp_dimensions['width'];
@@ -472,7 +468,6 @@
 			$('div.pp_pic_holder,div.ppt,.pp_fade').fadeOut(settings.animation_speed,function(){ $(this).remove(); });
 			
 			$pp_overlay.fadeOut(settings.animation_speed, function(){
-				if($.browser.msie && $.browser.version == 6) $('select').css('visibility','visible'); // To fix the bug with IE select boxes
 				
 				if(settings.hideflash) $('object,embed,iframe[src*=youtube],iframe[src*=vimeo]').css('visibility','visible'); // Show the flash
 				
@@ -595,11 +590,13 @@
 					pp_containerHeight = imageHeight, pp_containerWidth = imageWidth;
 				};
 			
-				_getDimensions(imageWidth,imageHeight);
+
 				
 				if((pp_containerWidth > windowWidth) || (pp_containerHeight > windowHeight)){
 					_fitToViewport(pp_containerWidth,pp_containerHeight)
 				};
+				
+				_getDimensions(imageWidth,imageHeight);
 			};
 			
 			return {
@@ -633,7 +630,6 @@
 			});
 			detailsHeight += $pp_details.height();
 			detailsHeight = (detailsHeight <= 34) ? 36 : detailsHeight; // Min-height for the details
-			if($.browser.msie && $.browser.version==7) detailsHeight+=8;
 			$pp_details.remove();
 			
 			// Get the titles height, to do so, I need to clone it since it's invisible
@@ -711,7 +707,7 @@
 		};
 	
 		function _insert_gallery(){
-			if(isSet && settings.overlay_gallery && _getFileType(pp_images[set_position])=="image" && (settings.ie6_fallback && !($.browser.msie && parseInt($.browser.version) == 6))) {
+			if(isSet && settings.overlay_gallery && _getFileType(pp_images[set_position])=="image") {
 				itemWidth = 52+5; // 52 beign the thumb width, 5 being the right margin.
 				navWidth = (settings.theme == "facebook" || settings.theme == "pp_default") ? 50 : 30; // Define the arrow width depending on the theme
 				
@@ -751,7 +747,7 @@
 		function _build_overlay(caller){
 			// Inject Social Tool markup into General markup
 			if(settings.social_tools)
-				facebook_like_link = settings.social_tools.replace(/{location_href}/g, encodeURIComponent(location.href)); 
+				facebook_like_link = settings.social_tools.replace('{location_href}', encodeURIComponent(location.href)); 
 
 			settings.markup = settings.markup.replace('{pp_social}',''); 
 			
@@ -887,7 +883,7 @@
 	};
 	
 	function getHashtag(){
-		url = location.href;
+		var url = location.href;
 		hashtag = (url.indexOf('#prettyPhoto') !== -1) ? decodeURI(url.substring(url.indexOf('#prettyPhoto')+1,url.length)) : false;
 
 		return hashtag;

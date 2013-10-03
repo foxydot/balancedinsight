@@ -87,4 +87,11 @@ function mininav_fallback() {
 </ul> <!-- #mini-nav -->
 <?php
 }
-?>
+
+add_action('wp_enqueue_scripts','msdlab_add_scripts');
+function msdlab_add_scripts() {
+    global $is_IE;
+    if(!is_admin()){
+        wp_enqueue_script('msd-jquery',get_stylesheet_directory_uri().'/theme-jquery.js',array('jquery'));
+    }
+}
