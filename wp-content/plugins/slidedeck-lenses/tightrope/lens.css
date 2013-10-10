@@ -256,7 +256,7 @@ Tags: images, posts, feeds, pages, slidedeck
     padding-bottom: 4px;
 }
 .lens-tightrope .sd-nav-deck {
-    margin: 0 auto;
+    margin: 0 10px;
     padding: 0;
     position: relative;
     overflow: visible;
