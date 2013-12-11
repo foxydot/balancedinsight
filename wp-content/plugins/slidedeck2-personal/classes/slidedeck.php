@@ -1084,7 +1084,7 @@ class SlideDeck {
         ) );
         
         if( $post_status == 'auto-draft' ) {
-            wp_schedule_single_event( time() + 30, "{$this->namespace}_cleanup_create", $slidedeck_id );
+            wp_schedule_single_event( time() + 86400, "{$this->namespace}_cleanup_create", array( $slidedeck_id ) );
         }
         
         // Set SlideDeck source
@@ -1933,9 +1933,6 @@ class SlideDeck {
         if( file_exists( SLIDEDECK2_DIRNAME . $filename ) ) {
             wp_register_script( "slidedeck-deck-{$this->name}-admin", SLIDEDECK2_URLPATH . $filename, array( 'jquery', 'slidedeck-admin' ), SLIDEDECK2_VERSION, true );
         }
-        // if( file_exists( SLIDEDECK2_PROFESSIONAL_DIRNAME . $filename ) ) {
-            // wp_register_script( "slidedeck-deck-{$this->name}-admin", SLIDEDECK2_PROFESSIONAL_URLPATH . $filename, array( 'jquery', 'slidedeck-admin' ), SLIDEDECK2_PROFESSIONAL_VERSION, true );
-        // }
     }
 
     /**
@@ -1980,9 +1977,6 @@ class SlideDeck {
         if( file_exists( SLIDEDECK2_DIRNAME . $filename ) ) {
             wp_register_style( "slidedeck-deck-{$this->name}-admin", SLIDEDECK2_URLPATH . $filename, array( 'slidedeck-admin' ), SLIDEDECK2_VERSION, 'screen' );
         }
-        // if( file_exists( SLIDEDECK2_PROFESSIONAL_DIRNAME . $filename ) ) {
-            // wp_register_style( "slidedeck-deck-{$this->name}-admin", SLIDEDECK2_PROFESSIONAL_URLPATH . $filename, array( 'slidedeck-admin' ), SLIDEDECK2_PROFESSIONAL_VERSION, 'screen' );
-        // }
     }
 
     /**

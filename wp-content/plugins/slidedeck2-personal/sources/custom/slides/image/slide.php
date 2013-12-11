@@ -48,6 +48,7 @@ class SlideDeckSlideType_Image extends SlideDeckSlideModel {
 		add_action( "wp_ajax_{$this->namespace}_html4_image_upload_form", array( &$this, 'ajax_html4_image_upload_form' ) );
 		add_action( "wp_ajax_{$this->namespace}_slide_upload_image", array( &$this, 'ajax_slide_upload_image' ) );
         add_action( "wp_ajax_{$this->namespace}_slide_add_from_medialibrary", array( &$this, 'ajax_slide_add_from_medialibrary' ) );
+        add_action( "wp_ajax_{$this->namespace}_query_image_from_medialibrary", array( &$this, 'ajax_query_image_from_medialibrary' ) );
         add_action( "wp_ajax_{$this->namespace}_slide_bulk_upload", array( &$this, 'ajax_slide_bulk_upload' ) );
 
 		add_filter( "{$this->namespace}_custom_slide_nodes", array( &$this, 'slidedeck_slide_nodes' ), 10, 3 );
@@ -278,6 +279,40 @@ class SlideDeckSlideType_Image extends SlideDeckSlideModel {
     }
     
     /**
+     * AJAX response for querying an image from the media library
+     * 
+     * @uses wp_verify_nonce()
+     */
+    function ajax_query_image_from_medialibrary() {
+        $response = array(
+            'valid' => true,
+            'error' => "",
+            'data' => false
+        );
+        
+        if( !wp_verify_nonce( $_REQUEST['_wpnonce'], "{$this->namespace}-medialibrary-add-images" ) ) {
+            $response['valid'] = false;
+            $response['error'] = __( "Validation failed", $this->namespace );
+        }
+        
+        // Make sure media_id and slide_id are passed in
+        if( !isset( $_REQUEST['media_id'] ) ) {
+            $response['valid'] = false;
+            $response['error'] = __( "You did not pass a valid slide or media ID", $this->namespace );
+        }
+
+        if( $response['valid'] === true ) {
+            // Clean passed in data
+            $media_id = intval( $_REQUEST['media_id'] );
+            $media = get_post($media_id);
+            $response['data']['title'] = $media->post_title;
+            $response['data']['excerpt'] = $media->post_excerpt;
+        }
+
+        die( json_encode( $response ) );
+    }
+    
+    /**
      * AJAX response for bulk image upload and slide addition
      * 
      * @uses SlideDeckSlide::create()
@@ -346,6 +381,26 @@ class SlideDeckSlideType_Image extends SlideDeckSlideModel {
      * @return array
      */
     function get_media_meta( $media_ids ) {
+        global $WPML_media;
+        global $sitepress;
+
+        $readd_wpml = $readd_wpml_media = false;
+
+        // Check to see if WPML is enabled and remove the "posts_where" filter from the query.
+        // We need to remember which plugin is active, so we re-add the correct filter.
+        if( defined( 'WPML_MEDIA_VERSION' ) ) {
+            if( has_filter( 'posts_where', array( $WPML_media, 'posts_where_filter' ) ) !== false ) {
+                $readd_wpml_media = true;
+            }
+            remove_filter( 'posts_where', array( $WPML_media, 'posts_where_filter' ) );
+        }
+        if( defined( 'ICL_SITEPRESS_VERSION' ) ) {
+            if( has_filter( 'posts_where', array( $sitepress, 'posts_where_filter' ) ) !== false ) {
+                $readd_wpml = true;
+            }
+            remove_filter( 'posts_where', array( $sitepress, 'posts_where_filter' ) );
+        }
+
         $single = false;
         
         if( !is_array( $media_ids ) ) {
@@ -380,6 +435,14 @@ class SlideDeckSlideType_Image extends SlideDeckSlideModel {
             }
             
             $media[$media_id] = $image;
+        }
+
+        // Check to see if we need to re-add the appropriate "posts_where" filter.
+        if( $readd_wpml ) {
+            add_filter( 'posts_where', array( $sitepress, 'posts_where_filter' ), 10, 2 );
+        }
+        if( $readd_wpml_media ) {
+            add_filter( 'posts_where', array( $WPML_media, 'posts_where_filter' ), 10, 2 );
         }
         
         if( $single )
@@ -628,15 +691,15 @@ class SlideDeckSlideType_Image extends SlideDeckSlideModel {
             if( ($slide->meta['_preferred_image_size'] != 'auto') && ($slide->meta['_preferred_image_size'] != 'auto_100') ) {
                 $image_size = $slide->meta['_preferred_image_size'];
             }
-            
-			$thumbnail_url = $image_url = "";
-			if( in_array( $slide->meta['_image_source'], array( "upload", "medialibrary" ) ) ) {
-				if( !empty( $slide->meta['_image_attachment'] ) ) {
-					$attachment = $this->get_media_meta( $slide->meta['_image_attachment'] );
+
+            $thumbnail_url = $image_url = "";
+            if( in_array( $slide->meta['_image_source'], array( "upload", "medialibrary" ) ) ) {
+                if( !empty( $slide->meta['_image_attachment'] ) ) {
+                    $attachment = $this->get_media_meta( $slide->meta['_image_attachment'] );
                     
                     // Determine image size to retrieve (closest size greater to SlideDeck size, or full of image scaling is off)
-		            $image_src = wp_get_attachment_image_src( $attachment['post']->ID, $image_size );
-		            
+                    $image_src = wp_get_attachment_image_src( $attachment['post']->ID, $image_size );
+
 					$image_url = $image_src[0];
 					$thumbnail_url = $attachment['src'][0];
 				}
