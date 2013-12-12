@@ -21,17 +21,15 @@
               <td class="spacer">&nbsp;</td>
               <td class="widget-middle">
 			  <div class="dialog">
-				 <div class="content">
-					<div class="t"></div><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Middle','theme707')) ) : endif; ?></div>
+				 <div class="content"><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Middle','theme707')) ) : endif; ?></div>
  				
 			  </div>
               </td>
               <td class="spacer">&nbsp;</td>
               <td class="widget-right">
 			  <div class="dialog">
-				 <div class="content">
-					<div class="t"></div><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Right','theme707')) ) : endif; ?></div>
- 				 <div class="b"><div></div></div>
+				 <div class="content"><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Right','theme707')) ) : endif; ?></div>
+ 				 </div></div>
               </td>
             </tr>
           </table>

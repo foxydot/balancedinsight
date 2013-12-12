@@ -1478,7 +1478,7 @@ $this->addAdminScripts();
 		// Plugin Functions ///////////////////////////
 		
 		function print_scripts() {
-			wp_enqueue_script( 'jquery-tools', 'http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js', array('jquery'), false, true );
+			wp_enqueue_script( 'jquery-tools', 'http://cdn.jquerytools.org/1.2.7/all/jquery.tools.min.js', array('jquery'), false, true );
 			wp_print_scripts( 'jquery-tools' );
 		}
 		
