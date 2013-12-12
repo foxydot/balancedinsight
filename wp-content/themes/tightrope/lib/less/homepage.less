@@ -1,0 +1,45 @@
+/*
+root element for the scrollable.  when scrolling occurs this
+element stays still.
+*/
+.scrollable {
+  /* required settings */
+  position:relative;
+  overflow:hidden;
+  width: 236px;
+  height:120px;
+}
+ 
+/*
+root element for scrollable items. Must be absolutely positioned
+and it should have a extremely large width to accommodate scrollable
+items.  it's enough that you set width and height for the root element
+and not for this element.
+*/
+.scrollable .items {
+  /* this cannot be too large */
+  width:20000em;
+  position:absolute;
+  padding: 2em 0;
+  li{
+    display: block;
+    float: left;
+    background: none;
+    padding: 0;
+    width: 236px;
+    text-align: center;
+  }
+}
+
+.browse {
+    text-align: center;
+    a {
+        background: url("../../images/scrollable_arrows.png") no-repeat scroll left center rgba(0, 0, 0, 0);
+        display: inline-block;
+        height: 12px;
+        width: 12px;
+    }
+    a.next {
+      background-position: right center;
+    }
+}
