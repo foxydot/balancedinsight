@@ -2,7 +2,7 @@
 /*
 * Add styles and scripts
 */
-add_action('wp_print_styles', 'msd_add_styles');
+add_action('wp_enqueue_scripts', 'msd_add_styles');
 
 function msd_add_styles() {
     global $is_IE;
@@ -16,7 +16,7 @@ function msd_add_styles() {
         }
     }
 }
-add_action('wp_print_scripts', 'msd_add_scripts');
+add_action('wp_enqueue_scripts', 'msd_add_scripts');
 
 function msd_add_scripts() {
     global $is_IE;
@@ -29,5 +29,19 @@ function msd_add_scripts() {
         if(is_front_page()){
             wp_enqueue_script('msd-homepage-jquery',get_stylesheet_directory_uri().'/lib/js/homepage-jquery.js',array('jquery','jquery-scrollto'));
         }
+        if(is_page('consensus')){
+            wp_enqueue_script('jquery-ui-core');
+            wp_enqueue_script('jquery-ui-accordion');
+            wp_enqueue_style('jquery-ui-style','//code.jquery.com/ui/1.10.3/themes/lightness/jquery-ui.css');
+            add_action('wp_print_footer_scripts','msdlab_print_consensus_scripts', 40);
+        }
     }
+}
+
+function msdlab_print_consensus_scripts(){
+    print '<script> 
+        jQuery(function($) {
+            $( "#accordion" ).accordion();
+        });
+    </script>';
 }
