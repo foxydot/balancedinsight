@@ -11,25 +11,16 @@
           <?php endwhile; endif; ?>
           <table id="widget-table">
             <tr>
-              <td class="widget-left">
-			  <div class="dialog">
-				 <div class="content">
-					<div class="t"></div><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Left','theme707')) ) : endif; ?></div>
- 				 <div class="b"><div></div></div>
-			  </div>
+              <td class="widget-left widget-cell">
+			  <?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Left','theme707')) ) : endif; ?>
               </td>
               <td class="spacer">&nbsp;</td>
-              <td class="widget-middle">
-			  <div class="dialog">
-				 <div class="content"><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Middle','theme707')) ) : endif; ?></div>
- 				
-			  </div>
+              <td class="widget-middle widget-cell">
+			  <?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Middle','theme707')) ) : endif; ?>
               </td>
               <td class="spacer">&nbsp;</td>
-              <td class="widget-right">
-			  <div class="dialog">
-				 <div class="content"><?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Right','theme707')) ) : endif; ?></div>
- 				 </div></div>
+              <td class="widget-right widget-cell">
+			  <?php if ( function_exists('dynamic_sidebar') && dynamic_sidebar(__('Home Widgets Right','theme707')) ) : endif; ?>
               </td>
             </tr>
           </table>
