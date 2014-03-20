@@ -24,4 +24,25 @@ jQuery(document).ready(function($) {
 	
 	var numwidgets = $('#footer-widgets div.widget').length;
 	$('#footer-widgets').addClass('cols-'+numwidgets);
+	
+	$("#notaccordion").addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+  .find("h4")
+    .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+    .hover(function() { $(this).toggleClass("ui-state-hover"); })
+    .click(function() {
+      $(this)
+        .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+        .next().toggleClass("ui-accordion-content-active").slideToggle();
+      return false;
+    })
+    .next()
+      .addClass("ui-accordion-content  ui-helper-reset ui-widget-content ui-corner-bottom")
+      .hide();
+    $("#notaccordion").find('h4:first-child').next('.ui-accordion-content').show();
+    $(".expand").addClass('btnOrange').click(function(){
+        $('.ui-accordion-content').show();
+    });
+    $(".collapse").addClass('btnOrange').click(function(){
+        $('.ui-accordion-content').hide();
+    });
 });

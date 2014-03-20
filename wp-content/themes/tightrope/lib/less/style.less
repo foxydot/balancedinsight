@@ -1,3 +1,4 @@
+@import 'mixins';
 * {
   margin:0;
   padding:0;
@@ -154,7 +155,7 @@ a:hover {
 .buttons-group {
   margin-top: 25px;
 }
-a.demo, a.try, a.specs, a.btnOrange, a.vid, a.demo2 {
+a.demo, a.try, a.specs, a.btnOrange, a.vid, a.demo2,button.btnOrange {
   vertical-align: top;
   display: inline-block;
   text-align: center;
@@ -201,7 +202,7 @@ a.vid.half-size {
   }
 
 
-a.btnOrange {
+a.btnOrange,button.btnOrange {
   background-image: none;
   height: 13px;
   margin: 10px 0;
@@ -718,6 +719,7 @@ img.alignleftsmall {
 #mainsitenav {
   /*background:url(../../images/bg-mainsitenav.png) top left repeat-x;*/
   /*background:url(../../images/NavBG.png) top left repeat-x;*/
+ background: @blue;
   position:relative;
   height:42px;
   /*overflow:hidden; */
@@ -733,11 +735,10 @@ img.alignleftsmall {
   font-weight:bold;
   float:left;
   display:block;
-  font-size:0.8em;
+  font-size:1em;
 }
 #mainsitenav ul.menu li a {
-  background:url(../../images/NavMainButtonBG.png) top right no-repeat;
-  color:#0079c2;
+  color:@white;
   text-decoration:none;
   text-transform: uppercase;
   display:block;
@@ -1751,7 +1752,7 @@ thead {
   color: #fff;
 }
 
-#accordion{
+#accordion, #notaccordion{
   h4{ 
     background: url("../../images/down-arrow.png") no-repeat scroll 20px 0 rgba(0, 0, 0, 0);
     font-size: 16px;
@@ -1760,6 +1761,11 @@ thead {
     padding-top: 1px;
     color: #0079C1;
     font-weight: normal;
+    clear:both;
+    float: none;
+  }
+  .ui-accordion-content{
+    margin-bottom: 2em;
   }
   ul.blue{
     li{
@@ -1801,4 +1807,8 @@ thead {
       margin: 1em auto;
     }
   }
+}
+button.btnOrange{
+  border: 0;
+  height: auto;
 }
