@@ -14,7 +14,9 @@
                                     <div class="text_box">
                                        <?php the_content('Read the rest of this entry &raquo;'); ?>
                                     </div>
+                                    <?php if(comments_open()){ ?>
                                     <div class="comments"><a href="<?php comments_link(); ?>"><em><b>comments (<?php comments_number('0', '1', '%', 'number'); ?>)</b></em></a></div>
+                                    <?php } ?>
                                     <!-- article end -->
                                     <?php endwhile; ?>
                                     <!--end content-->
